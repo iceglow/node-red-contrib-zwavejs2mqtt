@@ -1,0 +1,89 @@
+[
+    {
+        "id": "9b8ebd89.ea2e6",
+        "type": "mqtt in",
+        "z": "cc937248.2308f",
+        "name": "",
+        "topic": "zwave2mqtt/#",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "3432f2c.1ecf30e",
+        "x": 230,
+        "y": 200,
+        "wires": [
+            [
+                "f009b929.f85218"
+            ]
+        ]
+    },
+    {
+        "id": "ff731b0f.8d5098",
+        "type": "debug",
+        "z": "cc937248.2308f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 550,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "f009b929.f85218",
+        "type": "zwavejs2mqtt-filter",
+        "z": "cc937248.2308f",
+        "name": "PIR filter",
+        "prefix": "zwave2mqtt",
+        "nodeid": "^PIR-.*$",
+        "nodeidType": "re",
+        "commandClass": "48",
+        "endpoint": "0",
+        "property": "Motion",
+        "propertyType": "str",
+        "jsonPayload": true,
+        "outputs": 1,
+        "x": 400,
+        "y": 200,
+        "wires": [
+            [
+                "ff731b0f.8d5098"
+            ]
+        ]
+    },
+    {
+        "id": "3292bc9d.ce8354",
+        "type": "comment",
+        "z": "cc937248.2308f",
+        "name": "Sample filter",
+        "info": "Filters for devices named PIR, of \"Binary Sensor Command Class\" sending Motion messages.",
+        "x": 270,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "3432f2c.1ecf30e",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    }
+]

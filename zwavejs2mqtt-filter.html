@@ -1,0 +1,150 @@
+<script type="text/javascript">
+    RED.nodes.registerType('zwavejs2mqtt-filter',{
+        category: 'function',
+        color: '#fff0f0',
+        defaults: {
+            name: {value: ""},
+            prefix: {value: "zwave2mqtt"},
+            nodeid: {
+                value: "",
+                required: false, 
+                validate: RED.validators.typedInput('nodeidType')
+            },
+            nodeidType: { value: "str" },
+            commandClass: {
+                value: null,
+                required: false
+            },
+            endpoint: {
+                value: null,
+                required: false
+            },
+            property: {
+                value: "",
+                required: false, 
+                validate: RED.validators.typedInput('nodeidType')
+            },
+            propertyType: { value: "str" },
+            jsonPayload: { value: false },
+            outputs: {value: 1}
+        },
+        inputs:1,
+        outputs:1,
+        outputLabels: 'Filtered msg',
+        icon: "font-awesome/fa-filter",
+        label: function() {
+            return this.name||"ZwaveJs2Mqtt filter";
+        },
+        oneditprepare: function() {
+            var node = this;
+            $("#node-input-nodeid").typedInput({
+                type:"str",
+                types:["str","num","re"],
+                typeField: "#node-input-nodeidType"
+            });
+            $("#node-input-property").typedInput({
+                type:"str",
+                types:["str","num","re"],
+                typeField: "#node-input-propertyType"
+            });
+            $.getJSON('/z-wave-command-classes',function(data) {
+                data.forEach(element => {
+                    const name = `${element.name} (${element.valueDec})`;
+                    $("#node-input-commandClass").append(new Option(name, element.valueDec));
+                });
+                $("#node-input-commandClass").val(node.commandClass);
+            });
+            var row = $(".form-row > select").first().parent('.form-row');
+            var label = row.children('label');
+            $(".form-row > select").css('width', row.width()-label.width());
+        },
+        oneditsave: function() {
+            var node = this;
+
+            this.nodeidType = $("#node-input-nodeid").typedInput('type');
+            this.propertyType = $("#node-input-property").typedInput('type');
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="zwavejs2mqtt-filter">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i><span> Name</span></label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <hr />
+    <div class="form-row">
+        <label for="node-input-prefix"><span>Prefix</span></label>
+        <input type="text" id="node-input-prefix">
+    </div>
+    <div class="form-row">
+        <label for="node-input-nodeid" style="width: 130px;"><span>Node ID</span></label>
+        <input type="text" id="node-input-nodeid">
+        <input type="hidden" id="node-input-nodeidType">
+    </div>
+    <div class="form-row">
+        <label for="node-input-commandClass" style="width: 130px;"><span>Command Class</span></label>
+        <select id="node-input-commandClass">
+            <option value="">None</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-endpoint" style="width: 130px;"><span>Endpoint</span></label>
+        <select id="node-input-endpoint">
+            <option value="">None</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-property" style="width: 130px;"><span>Property</span></label>
+        <input type="text" id="node-input-property">
+        <input type="hidden" id="node-input-propertyType">
+    </div>
+    <hr />
+    <div class="form-row" id="node-reg-row">
+        <input type="checkbox" id="node-input-jsonPayload" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-jsonPayload" style="width: 90%;">Payload to JSON</label>
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="zwavejs2mqtt-filter">
+    <p>A node to filter messages outputed from Zwavejs2mqtt.</p>
+
+    <h3>Inputs</h3>
+    <p>The node takes as input, the messages from Zwavejs2mqtt.</p>
+
+    <dl class="message-properties">
+        <dt>topic
+            <span class="property-type">string</span>
+        </dt>
+        <dd> the topic from Zwave2mqtt. This is what's being filtered on. </dd>
+    </dl>
+
+    <h3>Outputs</h3>
+        <ol class="node-ports">
+            <li>Standard output
+                This is a pass-through node. What goes in, comes out.
+                <dl class="message-properties">
+                    <dt>payload <span class="property-type">string|object</span></dt>
+                    <dd>the message. Unchanged by default, can be configured to be converted to JSON.</dd>
+                </dl>
+            </li>
+        </ol>
+
+    <h3>Details</h3>
+        <p>The node can be configured to filter messages from a Zwave2mqtt gateway by matching the msg.topic.</p>
+
+    <h3>References</h3>
+        <ul>
+            <li><a href="https://github.com/zwave-js">Z-Wave JS</a> - GitHub repo</li>
+            <li><a href="https://github.com/zwave-js/zwavejs2mqtt">Zwave to MQTT</a> - GitHub repo</li>
+            <li><a href="https://hub.docker.com/r/zwavejs/zwavejs2mqtt">Zwave tto MQTT</a> - Docker image</li>
+        </ul>
+</script>
