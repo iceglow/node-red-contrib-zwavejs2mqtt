@@ -49,19 +49,23 @@ function filter(msg, config){
     return new Promise((resolve, reject) => {
         const topic = msg.topic || '';
         const topicParts = topic.split('/');
+        let location = config.hasLocation ? 1:0;
 
         msgFilter.prefix(topicParts[0], config)
             .then(() => {
-                return msgFilter.nodeid(topicParts[1], config);
+                return config.hasLocation ? msgFilter.location(topicParts[1], config) : Promise.resolve();
             })
             .then(() => {
-                return msgFilter.commandClass(topicParts[2], config);
+                return msgFilter.nodeid(topicParts[1+location], config);
             })
             .then(() => {
-                return msgFilter.endpoint(topicParts[3], config);
+                return msgFilter.commandClass(topicParts[2+location], config);
             })
             .then(() => {
-                return msgFilter.property(topicParts[4], config);
+                return msgFilter.endpoint(topicParts[3+location], config);
+            })
+            .then(() => {
+                return msgFilter.property(topicParts[4+location], config);
             })
             .then(() => { // To JSON or just as is
                 if (config.jsonPayload) {

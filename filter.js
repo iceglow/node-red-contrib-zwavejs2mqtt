@@ -17,6 +17,28 @@ const filter = {
         });
     },
 
+    location: function(location, config) {
+        return new Promise((resolve, reject) => {
+            if (config.nodeidType == 'str') {
+                if (location === config.nodeid) {
+                    resolve();
+                } else {
+                    reject();
+                }
+            } else if (config.nodeidType == 're') {
+                var re = new RegExp(config.nodeid);
+                
+                if (re.test(location)) {
+                    resolve();
+                } else {
+                    reject();
+                }
+            } else {
+                reject();
+            }
+        });
+    },
+
     nodeid: function(nodeid, config) {
         return new Promise((resolve, reject) => {
             if (config.nodeidType == 'num') {
