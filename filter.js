@@ -79,7 +79,9 @@ const filter = {
 
     endpoint: function(endpoint, config) {
         return new Promise((resolve, reject) => {
-            if (endpoint !== undefined && endpoint === config.endpoint) {
+            if (config.endpoint === undefined || config.endpoint === null || config.endpoint === "") {
+                resolve();
+            } else if (endpoint !== undefined && endpoint === config.endpoint) {
                 resolve();
             } else {
                 reject();
